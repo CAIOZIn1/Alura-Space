@@ -34,7 +34,7 @@ class CadastroForms(forms.Form):
         widget=forms.TextInput(
             attrs={
                 "class": "form-control",
-                "placeholder": "Ex.: Caio Lindo"
+                "placeholder": "Ex.: CaioLindo"
             }
         )
     )
@@ -71,3 +71,25 @@ class CadastroForms(forms.Form):
             }
         )
     )
+
+    def clean_nome_cadastro(self):
+        nome = self.cleaned_data.get('nome_cadastro')
+
+        if nome:
+            nome = nome.strip()
+
+            if not ' ' in nome:
+                return nome
+
+            raise forms.ValidationError(
+                "Não é possível inserir espaços dentro do campo nome!")
+
+    def clean_senha2(self):
+        senha_1 = self.cleaned_data.get('senha1')
+        senha_2 = self.cleaned_data.get('senha2')
+
+        if senha_1 and senha_2:
+            if senha_1 != senha_2:
+                raise forms.ValidationError('Senhas não são iguais')
+            else:
+                return senha_2
